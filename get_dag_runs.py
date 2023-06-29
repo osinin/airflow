@@ -55,22 +55,27 @@ def get_new_runs() -> list:
     return partitions
 
 
-def insert_df_into_sandbox(**kwargs) -> None:
+def listener(**kwargs) -> None:
     partitions = kwargs["partitions"]
     partitions = ast.literal_eval(partitions)
     if len(partitions) == 0:
-        raise AirflowSkipException(f'there are no updates in the parents DAGs ')
+        raise AirflowSkipException(f'There are no updates in the parents DAGs')
+
+
+def insert_df_into_sandbox(**kwargs) -> None:
+    partitions = kwargs["partitions"]
+    partitions = ast.literal_eval(partitions)
     for part in partitions:
-        # use the parts to calculate partitions in the child DAG
+        #your code
         pass
 
 """
 get partitions for operator form kwargs
 
-    insert_df_into_sandbox_task = PythonOperator(
-        task_id=f"insert_{script_name}",
-        python_callable=insert_df_into_sandbox,
+    listener = PythonOperator(
+        task_id="listener",
+        python_callable=listener,
         dag=dag,
         op_kwargs={"partitions": "{{ task_instance.xcom_pull(task_ids='get_new_runs', key='return_value') }}"}
-        )
+    )
 """
